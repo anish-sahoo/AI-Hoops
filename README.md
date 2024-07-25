@@ -1,2 +1,1 @@
-Capstone Project
-# CS4100-Project
+Anish's Exploration
