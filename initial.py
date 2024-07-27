@@ -20,11 +20,14 @@ print(env.metadata)
 print(env.spec)
 print(env.unwrapped.get_action_meanings())
 
+moves = ['NOOP', 'FIRE', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT', 'UPFIRE', 'RIGHTFIRE', 'LEFTFIRE', 'DOWNFIRE', 'UPRIGHTFIRE', 'UPLEFTFIRE', 'DOWNRIGHTFIRE', 'DOWNLEFTFIRE']
+
 obs = env.reset()
-for i in range(1000):
+for i in range(500):
     action = env.action_space.sample()
+    print(moves[action])
     obs, reward, truncated, info, done = env.step(action)
     # print(reward, done, info)
-    time.sleep(0.01)
+    time.sleep(0.1)
 
 env.close()
