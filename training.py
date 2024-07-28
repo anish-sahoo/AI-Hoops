@@ -19,7 +19,7 @@ ale.loadROM(DoubleDunk)
 env = gym.make('ALE/DoubleDunk-v5', render_mode='human', obs_type="ram")
 
 f = open("meta_data.txt", "r")
-f.read(json.loads()["ram_size"])
+size = json.loads(f.read())["ram_size"]
 f.close()
 
 
@@ -30,7 +30,7 @@ model.add(Dense(env.observation_space.shape[0]*2, input_shape=env.observation_sp
 model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-f = open("data.txt", "a")
+f = open("data1.txt", "r")
 data = json.loads(str(f.read()))
 f.close()
 

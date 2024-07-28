@@ -18,7 +18,7 @@ total_reward = 0
 data = []
 terminated = False
 truncated = False
-while not (terminated or truncated):
+while not (terminated):
     action = env.action_space.sample()
     obs, reward, terminated, truncated, info = env.step(action)
     total_reward += reward
