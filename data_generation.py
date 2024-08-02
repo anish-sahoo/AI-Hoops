@@ -64,7 +64,7 @@ if __name__ == "__main__":
     runs_per_batch = 1000 # update this
     
     i = 0
-    while i < 1: # update this to whatever works better
+    while i < 5: # update this to whatever works better
         dir = "data"
         while os.path.exists(dir + str(i)) or os.path.isfile(dir + str(i) + "_compressed.zip"):
             i += 1
