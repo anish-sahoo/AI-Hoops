@@ -14,7 +14,10 @@ from ale_py.roms import DoubleDunk
 ale = ALEInterface()
 ale.loadROM(DoubleDunk)
 
-env = gym.make('ALE/DoubleDunk-v5', render_mode='human', obs_type="ram")
+
+# no rendering : cpu does the work, faster but massive load on cpu (not recommended)
+# render_mode = human : gpu does the work, slower but less load on cpu (safer)
+env = gym.make('ALE/DoubleDunk-v5', obs_type="ram", render_mode="human")
 
 
 def play(pair):
@@ -49,11 +52,11 @@ def run(num_instances, num_total, dir):
     sl.rmtree(dir)
 
 if __name__ == "__main__":
-    num_instances = 10
-    runs_per_batch = 1000
+    num_instances = 40 # update this
+    runs_per_batch = 1000 # update this
     
     i = 0
-    while True:
+    while i < 10: # update this to whatever works better
         dir = "data"
         while os.path.exists(dir + str(i)) or os.path.isfile(dir + str(i) + "_compressed.zip"):
             i += 1
