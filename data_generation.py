@@ -23,7 +23,6 @@ env = gym.make('ALE/DoubleDunk-v5', obs_type="ram", render_mode="human")
 def play(pair):
     dir, num = pair
     obs, _ = env.reset()
-    print(obs)
     total_reward = 0
     data = []
     terminated = False
@@ -32,7 +31,7 @@ def play(pair):
         action = env.action_space.sample()
         old_obs = obs
         
-        obs, reward, terminated, truncated, info = env.step(action)
+        obs, reward, terminated, _, _ = env.step(action)
         total_reward += reward
 
         new_obs = np.array(obs)
