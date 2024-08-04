@@ -41,6 +41,7 @@ def play(pair):
             "action": action.tolist(),
             "new_state": new_obs.tolist(),
             "reward": new_rew.tolist(),
+            "done": terminated
         })
 
     if not os.path.exists(dir):
@@ -62,8 +63,8 @@ if __name__ == "__main__":
     num_instances = 40 # update this
     runs_per_batch = 1000 # update this
     
-    i = 0
-    while i < 5: # update this to whatever works better
+    i = 1
+    while i < 3: # update this to whatever works better
         dir = "data"
         while os.path.exists(dir + str(i)) or os.path.isfile(dir + str(i) + "_compressed.zip"):
             i += 1

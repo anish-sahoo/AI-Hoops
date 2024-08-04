@@ -5,15 +5,10 @@ import matplotlib.pyplot as plt
 import torch
 
 # %%
-file_path = 'data/data1_compressed/data0.json'
+file_path = 'data/data0_compressed/data0.json'
 df = pd.read_json(file_path)
 
 # %%
-df.rename(columns={0: 'ram_observation', 1: 'reward'}, inplace=True)
-
-df['ram_observation'] = df['ram_observation'].apply(lambda x: x[0] if isinstance(x, list) and len(x) == 1 else x)
-df['reward'] = df['reward'].apply(lambda x: x[0] if isinstance(x, list) and len(x) == 1 else x)
-
 df.head()
 
 
