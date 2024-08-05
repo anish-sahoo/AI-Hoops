@@ -91,6 +91,36 @@ def train_dqn(num_episodes, batch_size, gamma, epsilon_start, epsilon_final, eps
             state = next_state
             
             # update q value
+            # Compute loss and update Q-network
+            # Sample from replay buffer
+            batch = replay_buffer.sample(batch_size)
+            states, actions, rewards, next_states, dones = zip(*batch)
+
+            # Convert to tensors
+            states = torch.FloatTensor(states)
+            actions = torch.LongTensor(actions)
+            rewards = torch.FloatTensor(rewards)
+            next_states = torch.FloatTensor(next_states)
+            dones = torch.BoolTensor(dones)
+
+            # Compute Q-values for current and next states
+            q_values = policy_net(states)
+            q_values_next = target_net(next_states).detach()
+            max_q_values_next = q_values_next.max(1)[0]
+
+            # Compute expected Q-values
+            expected_q_values = rewards + gamma * (1 - dones.float()) * max_q_values_next
+
+            # Gather Q-values for actions taken
+            q_values_action = q_values.gather(1, actions.unsqueeze(1)).squeeze(1)
+
+            # Compute Huber loss (smooth L1 loss)
+            loss = nn.functional.smooth_l1_loss(q_values_action, expected_q_values)
+
+            # Optimize the model
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
         
         if epsilon > epsilon_final:
@@ -98,8 +128,6 @@ def train_dqn(num_episodes, batch_size, gamma, epsilon_start, epsilon_final, eps
         
         if episode % 10 == 0:
             target_net.load_state_dict(policy_net.state_dict())
-        
-        # print(f"Episode {episode}, Total Reward: {total_reward}, Loss: {episode_loss}, Epsilon: {epsilon}")
 
 
 # %%
