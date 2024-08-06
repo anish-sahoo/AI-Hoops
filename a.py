@@ -1,14 +1,43 @@
+# %%
 import polars as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from collections import deque
 import numpy as np
+import random
 from torch.nn.functional import relu
 from tqdm import tqdm 
-from torch.utils.data import DataLoader, Dataset
 
-torch.device("cuda")
+# %%
+import gymnasium as gym
+from ale_py import ALEInterface
+from ale_py.roms import DoubleDunk
+
+ale = ALEInterface()
+ale.loadROM(DoubleDunk)
+
+# %%
+replay_buffer_df = pd.DataFrame()
+for i in range(0, 1000):
+    file_path = 'data/data1_compressed/data' + str(i) + '.json'
+    df = pd.read_json(file_path)
+    replay_buffer_df = pd.concat([replay_buffer_df, df])
+
+# %%
+df.head()
+
+# %%
+states = np.stack(df['state'].to_numpy())
+actions = df['action'].to_numpy()
+next_states = np.stack(df['new_state'].to_numpy())
+rewards = df['reward'].to_numpy()
+dones = df['done'].to_numpy()
+
+# %%
+from torch.utils.data import DataLoader, Dataset
 
 class ReplayDataset(Dataset):
     def __init__(self, states, actions, next_states, rewards, dones):
@@ -24,6 +53,10 @@ class ReplayDataset(Dataset):
     def __getitem__(self, idx):
         return (self.states[idx], self.actions[idx], self.next_states[idx], self.rewards[idx], self.dones[idx])
 
+dataset = ReplayDataset(states, actions, next_states, rewards, dones)
+dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+
+# %%
 class DeepQNetwork(nn.Module):
     def __init__(self, input_dim, action_space):
         super(DeepQNetwork, self).__init__()
@@ -41,6 +74,7 @@ class DeepQNetwork(nn.Module):
         x = self.fc5(x)
         return x
 
+# %%
 def train_dqn(dataloader, num_epochs, gamma, target_update_freq):
     input_dim = 128
     action_space = 18
@@ -54,7 +88,7 @@ def train_dqn(dataloader, num_epochs, gamma, target_update_freq):
     epoch_losses = []
     epoch_rewards = []
     
-    for epoch in tqdm(range(num_epochs), desc='Training'):
+    for epoch in tqdm(range(num_epochs)):
         epoch_loss = 0
         total_reward = 0
         for states, actions, next_states, rewards, dones in dataloader:
@@ -82,6 +116,13 @@ def train_dqn(dataloader, num_epochs, gamma, target_update_freq):
         
     return policy_net, epoch_losses, epoch_rewards
 
+
+# %%
+policy_net, epoch_losses, epoch_rewards = train_dqn(dataloader, num_epochs=100, gamma=0.99, target_update_freq=20)
+
+# %%
+import matplotlib.pyplot as plt
+
 def plot_training_statistics(epoch_losses, epoch_rewards):
     fig, ax1 = plt.subplots()
 
@@ -99,8 +140,11 @@ def plot_training_statistics(epoch_losses, epoch_rewards):
 
     fig.tight_layout()  
     plt.title('Training Statistics')
-    plt.savefig('training_statistics.png')
+    plt.show()
 
+plot_training_statistics(epoch_losses, epoch_rewards)
+
+# %%
 def get_action_probabilities(policy_net, state):
     policy_net.eval()
     with torch.no_grad():
@@ -109,28 +153,11 @@ def get_action_probabilities(policy_net, state):
         action_probabilities = torch.nn.functional.softmax(q_values, dim=1)
     return action_probabilities.squeeze().numpy()
 
-def load_data(size=100):
-    replay_buffer_df = pd.DataFrame()
-    for i in tqdm(range(0, size), desc='Loading data'):
-        file_path = 'data/data1_compressed/data' + str(i) + '.json'
-        df = pd.read_json(file_path)
-        replay_buffer_df = pd.concat([replay_buffer_df, df])
-    return replay_buffer_df
+# %%
+sample_state = states[0]
 
-if __name__ == '__main__':
-    replay_buffer_df = load_data(100)
-    states = np.stack(replay_buffer_df['state'].to_numpy())
-    actions = replay_buffer_df['action'].to_numpy()
-    next_states = np.stack(replay_buffer_df['new_state'].to_numpy())
-    rewards = replay_buffer_df['reward'].to_numpy()
-    dones = replay_buffer_df['done'].to_numpy()
+action_probabilities = get_action_probabilities(policy_net, sample_state)
+print(f"Action probabilities for the sample state: {action_probabilities}")
+print(f"Predicted action: {np.argmax(action_probabilities)}")
 
-    dataset = ReplayDataset(states, actions, next_states, rewards, dones)
-    dataloader = DataLoader(dataset, batch_size=100, shuffle=True, num_workers=4)
 
-    policy_net, epoch_losses, epoch_rewards = train_dqn(dataloader, num_epochs=10, gamma=0.99, target_update_freq=2)
-    
-    plot_training_statistics(epoch_losses, epoch_rewards)
-    
-    torch.save(policy_net.state_dict(), 'policy_net.pth')
-    print("Model saved to policy_net.pth")

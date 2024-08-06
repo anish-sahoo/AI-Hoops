@@ -2,3 +2,6 @@
 *.ipynb
 *.zip
 data/
+__pycache__/
+*.pyc
+*.png
