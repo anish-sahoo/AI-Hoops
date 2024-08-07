@@ -3,7 +3,7 @@ import gymnasium as gym
 from ale_py import ALEInterface
 from ale_py.roms import DoubleDunk
 import matplotlib.pyplot as plt
-from old_files.doubledunk_training import DeepQNetwork
+from doubledunk_dqn_final import DeepQNetwork
 import torch
 
 ale = ALEInterface()
@@ -12,7 +12,7 @@ env = gym.make('ALE/DoubleDunk-ram-v5', obs_type="ram", render_mode="human")
 
 policy_net = DeepQNetwork(128, 18)
 
-policy_net.load_state_dict(torch.load('policy_net_direct.pth', weights_only=True))
+policy_net.load_state_dict(torch.load('policy_net_100.pth', weights_only=True))
 policy_net.eval()
 
 next_state, _ = env.reset()
