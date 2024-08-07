@@ -91,11 +91,11 @@ def plot_training_statistics(epoch_losses, epoch_rewards):
     ax1.plot(epoch_losses, color=color)
     ax1.tick_params(axis='y', labelcolor=color)
 
-    ax2 = ax1.twinx()  
-    color = 'tab:blue'
-    ax2.set_ylabel('Total Reward', color=color)
-    ax2.plot(epoch_rewards, color=color)
-    ax2.tick_params(axis='y', labelcolor=color)
+    # ax2 = ax1.twinx()  
+    # color = 'tab:blue'
+    # ax2.set_ylabel('Total Reward', color=color)
+    # ax2.plot(epoch_rewards, color=color)
+    # ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()  
     plt.title('Training Statistics')
@@ -109,16 +109,17 @@ def get_action_probabilities(policy_net, state):
         action_probabilities = torch.nn.functional.softmax(q_values, dim=1)
     return action_probabilities.squeeze().numpy()
 
-def load_data(size=100):
+def load_data(size=100, folders=1):
     replay_buffer_df = pd.DataFrame()
-    for i in tqdm(range(0, size), desc='Loading data'):
-        file_path = 'data/data1_compressed/data' + str(i) + '.json'
-        df = pd.read_json(file_path)
-        replay_buffer_df = pd.concat([replay_buffer_df, df])
+    for j in range(0, folders):
+        for i in tqdm(range(0, size), desc=f'Loading data from folder {str(j)}'):
+            file_path = f'data/data{j}_compressed/data{str(i)}.json'
+            df = pd.read_json(file_path)
+            replay_buffer_df = pd.concat([replay_buffer_df, df])
     return replay_buffer_df
 
 if __name__ == '__main__':
-    replay_buffer_df = load_data(100)
+    replay_buffer_df = load_data(1000)
     states = np.stack(replay_buffer_df['state'].to_numpy())
     actions = replay_buffer_df['action'].to_numpy()
     next_states = np.stack(replay_buffer_df['new_state'].to_numpy())
@@ -128,7 +129,7 @@ if __name__ == '__main__':
     dataset = ReplayDataset(states, actions, next_states, rewards, dones)
     dataloader = DataLoader(dataset, batch_size=100, shuffle=True, num_workers=4)
 
-    policy_net, epoch_losses, epoch_rewards = train_dqn(dataloader, num_epochs=10, gamma=0.99, target_update_freq=2)
+    policy_net, epoch_losses, epoch_rewards = train_dqn(dataloader, num_epochs=100, gamma=0.99, target_update_freq=10)
     
     plot_training_statistics(epoch_losses, epoch_rewards)
     

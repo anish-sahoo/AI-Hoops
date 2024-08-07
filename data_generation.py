@@ -1,6 +1,7 @@
 # could use python 3.11
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 import multiprocessing as mp
 import json
@@ -17,22 +18,20 @@ ale.loadROM(DoubleDunk)
 
 # no rendering : cpu does the work, faster but massive load on cpu (not recommended)
 # render_mode = human : gpu does the work, slower but less load on cpu (safer)
-env = gym.make('ALE/DoubleDunk-v5', obs_type="ram", render_mode="human")
+env = gym.make('ALE/DoubleDunk-ram-v5', obs_type="ram", render_mode="human")
 
 
 def play(pair):
     dir, num = pair
     obs, _ = env.reset()
-    total_reward = 0
+    obs = np.array(obs)
     data = []
     terminated = False
-    truncated = False
-    while not (terminated):
+    while not terminated:
         action = env.action_space.sample()
         old_obs = obs
         
         obs, reward, terminated, _, _ = env.step(action)
-        total_reward += reward
 
         new_obs = np.array(obs)
         new_rew = np.array(reward)
@@ -60,11 +59,11 @@ def run(num_instances, num_total, dir):
     sl.rmtree(dir)
 
 if __name__ == "__main__":
-    num_instances = 40 # update this
+    num_instances = 50 # update this
     runs_per_batch = 1000 # update this
     
-    i = 1
-    while i < 3: # update this to whatever works better
+    i = 0
+    for j in tqdm(range(6)): # update this to whatever works better
         dir = "data"
         while os.path.exists(dir + str(i)) or os.path.isfile(dir + str(i) + "_compressed.zip"):
             i += 1
