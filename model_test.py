@@ -12,7 +12,7 @@ env = gym.make('ALE/DoubleDunk-ram-v5', obs_type="ram", render_mode="human")
 
 policy_net = DeepQNetwork(128, 18)
 
-policy_net.load_state_dict(torch.load('policy_net_100.pth', weights_only=True))
+policy_net.load_state_dict(torch.load('policy_net_100_4096_first.pth', weights_only=True))
 policy_net.eval()
 
 next_state, _ = env.reset()
