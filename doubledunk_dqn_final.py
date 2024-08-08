@@ -38,23 +38,6 @@ class ReplayBuffer:
 
 
 # %%
-# class DeepQNetwork(nn.Module):
-#     def __init__(self, input_dim, action_space):
-#         super(DeepQNetwork, self).__init__()
-#         self.fc1 = nn.Linear(input_dim, 128)
-#         self.fc2 = nn.Linear(128, 128)
-#         self.fc3 = nn.Linear(128, 64)
-#         self.fc4 = nn.Linear(64, 32)
-#         self.fc5 = nn.Linear(32, action_space)
-    
-#     def forward(self, x):
-#         x = torch.relu(self.fc1(x))
-#         x = torch.relu(self.fc2(x))
-#         x = torch.relu(self.fc3(x))
-#         x = torch.relu(self.fc4(x))
-#         x = self.fc5(x)
-#         return x
-
 
 class DeepQNetwork(nn.Module):
     def __init__(self, input_dim, action_space):
@@ -86,7 +69,7 @@ def epsilon_greedy_action_selection(policy_net, state, epsilon):
         return q_values.max(1)[1].item()
 
 # %%
-def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, epsilon_decay, target_update_freq):
+def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, epsilon_decay, target_update_freq, negative_reward=-0.01):
     input_dim = env.observation_space.shape[0]
     action_space = env.action_space.n
     
@@ -113,7 +96,7 @@ def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, 
             action = epsilon_greedy_action_selection(policy_net, state, epsilon)
             next_state, reward, done, _, _ = env.step(action)
             
-            reward -= 0.01
+            reward += negative_reward
             total_reward += reward
             
             replay_buffer.push(state, action, next_state, reward, done)
@@ -150,13 +133,13 @@ def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, 
         
         if episode % target_update_freq == 0:
             target_net.load_state_dict(policy_net.state_dict())
-        if episode % 100 == 0:
-            torch.save(policy_net.state_dict(), f'policy_net_{episode}.pth')
+        if episode % 100 == 0 and episode > 0:
+            torch.save(policy_net.state_dict(), f'policy_net_{episode}_{batch_size}.pth')
         
     return policy_net, epoch_losses, epoch_rewards
 
 # %%
-def plot_training_statistics(epoch_losses, epoch_rewards):
+def plot_training_statistics(epoch_losses, epoch_rewards, filename='training_statistics'):
     fig, ax1 = plt.subplots()
 
     color = 'tab:red'
@@ -173,7 +156,7 @@ def plot_training_statistics(epoch_losses, epoch_rewards):
 
     fig.tight_layout()  
     plt.title('Training Statistics')
-    plt.savefig('training_statistics.png')
+    plt.savefig(filename + '.png')
 
 # %%
 import gymnasium as gym
@@ -188,20 +171,30 @@ if __name__ == '__main__':
     env = gym.make('ALE/DoubleDunk-ram-v5', obs_type="ram")
 
     # %%
-    num_episodes = 500
-    batch_size = 1024
+    num_episodes = 100
+    batch_size = 4096
     gamma = 0.99
     epsilon_start = 1.0
     epsilon_end = 0.01
     epsilon_decay = 0.995
     target_update_freq = 25
 
-    policy_net, epoch_losses, epoch_rewards = train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, epsilon_decay, target_update_freq)
+    policy_net, epoch_losses, epoch_rewards = train_dqn(
+        env, 
+        num_episodes, 
+        batch_size, 
+        gamma, 
+        epsilon_start, 
+        epsilon_end, 
+        epsilon_decay, 
+        target_update_freq, 
+        negative_reward=0
+    )
 
-    plot_training_statistics(epoch_losses, epoch_rewards)
+    plot_training_statistics(epoch_losses, epoch_rewards, f'policy_net_{num_episodes}_{batch_size}')
         
-    torch.save(policy_net.state_dict(), 'policy_net_direct.pth')
-    print("Model saved to policy_net.pth")
+    torch.save(policy_net.state_dict(), f'policy_net_{num_episodes}_{batch_size}.pth')
+    print(f'Model saved to policy_net_{num_episodes}_{batch_size}.pth')
 
 # %%
 # plot_training_statistics(epoch_losses, epoch_rewards)
