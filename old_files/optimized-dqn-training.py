@@ -1,0 +1,142 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+from torch.nn.functional import relu
+from tqdm import tqdm 
+from torch.utils.data import DataLoader, Dataset, random_split
+import random
+import gymnasium as gym
+from ale_py import ALEInterface
+from ale_py.roms import DoubleDunk
+
+# Use CUDA if available
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+class ReplayBuffer:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.buffer = []
+        self.position = 0
+
+    def push(self, state, action, next_state, reward, done):
+        if len(self.buffer) < self.capacity:
+            self.buffer.append(None)
+        self.buffer[self.position] = (state, action, next_state, reward, done)
+        self.position = (self.position + 1) % self.capacity
+
+    def sample(self, batch_size):
+        batch = random.sample(self.buffer, batch_size)
+        state, action, next_state, reward, done = map(np.stack, zip(*batch))
+        return (torch.FloatTensor(state).to(device),
+                torch.LongTensor(action).to(device),
+                torch.FloatTensor(next_state).to(device),
+                torch.FloatTensor(reward).to(device),
+                torch.FloatTensor(done).to(device))
+
+    def __len__(self):
+        return len(self.buffer)
+
+class DeepQNetwork(nn.Module):
+    def __init__(self, input_dim, action_space):
+        super(DeepQNetwork, self).__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, 128),
+            nn.ReLU(),
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64, 32),
+            nn.ReLU(),
+            nn.Linear(32, action_space)
+        )
+    
+    def forward(self, x):
+        return self.net(x)
+
+def epsilon_greedy_action_selection(policy_net, state, epsilon):
+    if np.random.rand() < epsilon:
+        return np.random.randint(policy_net.net[-1].out_features)
+    else:
+        state = torch.FloatTensor(state).unsqueeze(0).to(device)
+        with torch.no_grad():
+            q_values = policy_net(state)
+        return q_values.max(1)[1].item()
+
+def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, epsilon_decay, target_update_freq):
+    input_dim = env.observation_space.shape[0]
+    action_space = env.action_space.n
+    
+    policy_net = DeepQNetwork(input_dim, action_space).to(device)
+    target_net = DeepQNetwork(input_dim, action_space).to(device)
+    
+    target_net.load_state_dict(policy_net.state_dict())
+    optimizer = optim.Adam(policy_net.parameters())
+    
+    replay_buffer = ReplayBuffer(capacity=100000)
+    
+    epoch_losses = []
+    epoch_rewards = []
+    
+    epsilon = epsilon_start
+    
+    for episode in tqdm(range(num_episodes), desc='Training'):
+        state, _ = env.reset()
+        total_reward = 0
+        episode_loss = 0
+        
+        done = False
+        while not done:
+            action = epsilon_greedy_action_selection(policy_net, state, epsilon)
+            next_state, reward, done, _, _ = env.step(action)
+            
+            reward -= 0.01
+            total_reward += reward
+            
+            replay_buffer.push(state, action, next_state, reward, done)
+            state = next_state
+            
+            if len(replay_buffer) >= batch_size:
+                states, actions, next_states, rewards, dones = replay_buffer.sample(batch_size)
+                
+                q_values = policy_net(states).gather(1, actions.unsqueeze(1)).squeeze(1)
+                next_q_values = target_net(next_states).max(1)[0]
+                expected_q_values = rewards + gamma * next_q_values * (1 - dones)
+                
+                loss = nn.functional.mse_loss(q_values, expected_q_values.detach())
+                
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                
+                episode_loss += loss.item()
+                
+        epsilon = max(epsilon_end, epsilon * epsilon_decay)
+        
+        epoch_losses.append(episode_loss)
+        epoch_rewards.append(total_reward)
+        
+        if episode % target_update_freq == 0:
+            target_net.load_state_dict(policy_net.state_dict())
+        
+    return policy_net, epoch_losses, epoch_rewards
+
+# Main execution
+if __name__ == "__main__":
+    ale = ALEInterface()
+    ale.loadROM(DoubleDunk)
+    env = gym.make('ALE/DoubleDunk-ram-v5', obs_type="ram")
+
+    num_episodes = 100
+    batch_size = 1024
+    gamma = 0.99
+    epsilon_start = 1.0
+    epsilon_end = 0.01
+    epsilon_decay = 0.995
+    target_update_freq = 10
+
+    policy_net, epoch_losses, epoch_rewards = train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, epsilon_decay, target_update_freq)
+
+    torch.save(policy_net.state_dict(), 'policy_net_optimized.pth')
+    print("Model saved to policy_net_optimized.pth")
