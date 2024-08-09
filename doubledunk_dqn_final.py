@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader, Dataset, random_split
 import random
 
 # %%
-torch.device("cuda")
+torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # %%
 class ReplayBuffer:
@@ -69,7 +69,26 @@ def epsilon_greedy_action_selection(policy_net, state, epsilon):
         return q_values.max(1)[1].item()
 
 # %%
-def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, epsilon_decay, target_update_freq, negative_reward=-0.01):
+
+def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, epsilon_decay, target_update_freq, negative_reward=-0.01, plot=True, save=True):
+    """
+    Training function for DQN
+    Args:
+        env: any gym environment, should work for any observation type that returns a numpy array (ram is preferred)
+        num_episodes: number of episodes to train the agent
+        batch_size: batch size for training
+        gamma: discount factor
+        epsilon_start: initial epsilon value for epsilon-greedy action selection
+        epsilon_end: final epsilon value for epsilon-greedy action selection
+        epsilon_decay: decay rate for epsilon
+        target_update_freq: frequency of updating target network
+        negative_reward: negative reward for each step
+        plot: whether to plot training statistics
+        save: whether to save the model
+    Returns:
+        (policy_net, epoch_losses, epoch_rewards): trained policy network, list of losses for each episode,\n list of total rewards for each episode
+    """
+    
     input_dim = env.observation_space.shape[0]
     action_space = env.action_space.n
     
@@ -133,9 +152,13 @@ def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, 
         
         if episode % target_update_freq == 0:
             target_net.load_state_dict(policy_net.state_dict())
-        if episode % 100 == 0 and episode > 0:
+        if episode % 100 == 0 and episode > 0 and save:
             torch.save(policy_net.state_dict(), f'policy_net_{episode}_{batch_size}.pth')
-        
+    if plot:
+        plot_training_statistics(epoch_losses, epoch_rewards, f'policy_net_{num_episodes}_{batch_size}')
+    if save:
+        torch.save(policy_net.state_dict(), f'policy_net_{num_episodes}_{batch_size}.pth')
+        print(f'Model saved to policy_net_{num_episodes}_{batch_size}.pth')
     return policy_net, epoch_losses, epoch_rewards
 
 # %%
@@ -190,16 +213,8 @@ if __name__ == '__main__':
         target_update_freq, 
         negative_reward=0
     )
-
-    plot_training_statistics(epoch_losses, epoch_rewards, f'policy_net_{num_episodes}_{batch_size}')
         
-    torch.save(policy_net.state_dict(), f'policy_net_{num_episodes}_{batch_size}.pth')
-    print(f'Model saved to policy_net_{num_episodes}_{batch_size}.pth')
-
-# %%
-# plot_training_statistics(epoch_losses, epoch_rewards)
-    
-# torch.save(policy_net.state_dict(), 'policy_net_direct.pth')
-# print("Model saved to policy_net.pth")
+    # torch.save(policy_net.state_dict(), f'policy_net_{num_episodes}_{batch_size}.pth')
+    # print(f'Model saved to policy_net_{num_episodes}_{batch_size}.pth')
 
 
