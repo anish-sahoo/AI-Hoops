@@ -1,13 +1,15 @@
-# %%
+# imports
 import torch
 import torch.nn as nn
 import torch.optim as optim
 
 from tqdm import tqdm 
 
+# local imports
 from dqn_model import DeepQNetwork, plot_training_statistics, epsilon_greedy_action_selection
 from replay_buffer import ReplayBuffer
 
+# imports for environment
 import gymnasium as gym
 from ale_py import ALEInterface
 from ale_py.roms import DoubleDunk
@@ -49,7 +51,8 @@ def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, 
     epoch_rewards = []
     
     epsilon = epsilon_start
-    
+
+    # loop for every episode
     for episode in tqdm(range(num_episodes), desc='Training'):
         state, _ = env.reset()
         total_reward = 0
