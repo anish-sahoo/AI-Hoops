@@ -12,7 +12,7 @@
 <h3 align="center">AI Hoops!</h3>
 
   <p align="center">
-    AI Hoops modifies the standard rules of basketball to enhance strategic learning: players cannot move when holding the ball, the ball must remain within preset boundaries, and any agent can pick up the ball at any time. Our agent is trained using a custom-built Deep Q-Network (DQN), which processes the RAM data to determine the best actions to maximize the score difference against opponents.
+    AI Hoops modifies the standard rules of basketball to enhance optimize rewards during game play.
     <br />
     <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
     <br />
