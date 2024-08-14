@@ -56,6 +56,7 @@ def main():
      device = get_device()
      sample_usage(device)
 
+#A copy of the info used for each agent
 @dataclass
 class Agent_Info():
     policy_net: any
@@ -67,6 +68,7 @@ class Agent_Info():
     epoch_rewards: any
     epsilon: any
 
+    
 def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, epsilon_decay, target_update_freq, 
               negative_reward=-0.01, plot=True, save=True, device="cpu", replay_buffer_size=100):
     """
