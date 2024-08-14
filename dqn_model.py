@@ -23,13 +23,15 @@ class DeepQNetwork(nn.Module):
     
 
 def epsilon_greedy_action_selection(policy_net, state, epsilon, device):
-    if np.random.rand() < epsilon:
-        # return np.random.randint(policy_net.fc5.out_features)
+    if np.random.uniform(0, 1) < epsilon:
         return np.random.randint(policy_net.net[-1].out_features)
     else:
         state = torch.FloatTensor(state).unsqueeze(0).to(device)
         with torch.no_grad():
             q_values = policy_net(state)
+            # action_probs = torch.softmax(q_values, dim=1)
+        # return torch.multinomial(action_probs, 1).item()
+        # return action_probs.argmax(1).item()
         return q_values.max(1)[1].item()
     
 def plot_training_statistics(epoch_losses, epoch_rewards, filename='training_statistics'):
