@@ -14,10 +14,6 @@ from replay_buffer import ReplayBuffer
 #standard imports
 from dataclasses import dataclass
 
-
-
-print(env.agents)
-
 #uses cuda if available
 def get_device():
     device = "cuda" if torch.cuda.is_available() else "cpu"
