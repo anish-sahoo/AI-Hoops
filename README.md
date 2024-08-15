@@ -51,8 +51,8 @@ AI Hoops is a respository for training and executing models on the Dobble Dunk A
 
 Install the following prerequisites. Be sure to have auto rom install roms for both Gymnasium and PettingZoo if you want to use both.
 <ul>
-  <li><a href="#https://github.com/pytorch/pytorch">Pytorch</a></li>
-  <li><a href="#https://github.com/Farama-Foundation/Gymnasium">Gymnasium</a></li>
+  <li><a href="https://github.com/pytorch/pytorch">Pytorch</a></li>
+  <li><a href="https://github.com/Farama-Foundation/Gymnasium">Gymnasium</a></li>
   <li><a href="https://github.com/Farama-Foundation/PettingZoo">PettingZoo</a></li>
   <li><a href="https://github.com/Farama-Foundation/Arcade-Learning-Environment">Arcade-Learning-Environment</a></li>
   <li><a href="https://github.com/Farama-Foundation/AutoROM">AutoROM</a></li>
