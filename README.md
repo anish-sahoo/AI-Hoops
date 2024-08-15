@@ -20,12 +20,9 @@
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
-      <li><a href="#Installation">Prerequisites</a></li>
+      <li><a href="#Installation">Installation</a></li>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
@@ -38,16 +35,12 @@ AI Hoops is a respository for training and executing models on the Dobble Dunk A
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-
 <!-- GETTING STARTED -->
 ## Getting Started
 
 ### Installation
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 Install the following prerequisites. Be sure to have auto rom install roms for both Gymnasium and PettingZoo if you want to use both.
 <ul>
@@ -58,7 +51,6 @@ Install the following prerequisites. Be sure to have auto rom install roms for b
   <li><a href="https://github.com/Farama-Foundation/AutoROM">AutoROM</a></li>
   <li><a href="#installation">Installation</a></li>
 </ul>
-
 
 <!-- USAGE EXAMPLES -->
 ## Usage
