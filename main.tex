@@ -21,7 +21,7 @@ AI HOOPS - A Basketball Simulation\\
 \textit{CS 4100 - Artificial Intelligence}\\
 \textit{Northeastern University},\\
 \textit{Boston, MA}\\
-\{carpenter.et,sahoo.an,ali.sa\}@northeastern.edu \\
+\{carpenter.et, sahoo.an, ali.sa\}@northeastern.edu \\
 \href{https://github.com/anish-sahoo/AI-Hoops}{\textbf{Github Repository: github.com/anish-sahoo/AI-Hoops}} \\
 }
 
@@ -48,11 +48,11 @@ These constraints enhance our simulated basketball environment and contribute to
 
 \section{\textbf{RELATED WORKS}}
 \vspace{.5cm}
-Our initial exploration found that our problem had previously been solved using pixel image data. One of our ideas was to use a Deep Q Network (DQN) Learning algorithm to solve our problem.A paper by Mnih et al. employed a DQN model to master a variety of Atari 2600 games using pixel image data as input.  The results of this experiment indicated that Double Dunk could not achieve scores better than the average human. This was attributed to the tendency of DQN models to overestimate Q-values of potential actions in a given game state. \\
+Our initial exploration found that our problem had previously been solved using pixel image data. One of our ideas was to use a Deep Q Network (DQN) Learning algorithm to solve our problem. A paper by Mnih et al. employed a DQN model to master a variety of Atari 2600 games using pixel image data as input.  The results of this experiment indicated that Double Dunk could not achieve scores better than the average human. This was attributed to the tendency of DQN models to overestimate Q-values of potential actions in a given game state. \\
 
 After tweaking our approach, we adjusted our strategy and ultimately decided to try implementing a Double Deep Q Network along with RAM data. As mentioned by Bellemare et al., DDQNs can overcome the overestimation seen with standard DQN models by utilizing a dual architecture—using a fixed Q target to stabilize the learning process and selecting the best action. This approach aims to overcome low convergence and achieve efficient processing. \\
 
-Additionally, an experiment by Shangtong et al. demonstrated that the replay buffer can drastically reduce the number of episodes required to train, and the size of the replay buffer can significantly affect model performance. The critical idea of experience replay is to train the agent with the transitions sampled from the buffer of previously experienced transitions. While increasing the buffer size can potentially increase the time necessary for the algorithm to execute, this does not guarantee optimized performance. We thought it would be interesting to modify the size of the buffer from 1000000 to identify an optimal size that balances training speed with learning effectiveness, as many papers published within this domain do not attempt this.\\
+Additionally, an experiment by Shangtong et al. demonstrated that the replay buffer can drastically reduce the number of episodes required to train, and the size of the replay buffer can significantly affect model performance. The critical idea of experience replay is to train the agent with the transitions sampled from the buffer of previously experienced transitions. While increasing the buffer size can potentially increase the time necessary for the algorithm to execute, this does not guarantee optimized performance. We thought it would be interesting to modify the size of the buffer from the commonly used size of 1000000 to identify an optimal size that balances training speed with learning effectiveness, as many papers published within this domain do not attempt this.\\
 
 \vspace{.5cm}
 \section{\textbf{METHODS}}
@@ -75,7 +75,7 @@ Additionally, an experiment by Shangtong et al. demonstrated that the replay buf
     \textbf{$Q$ Loss = $(\text{Target $Q$ Value} - \text{Predicted $Q$ Value})^2$}
 \end{center} 
 \vspace{.5cm}
-The DDQN model was designed using PyTorch to tailor input from the state of the game and output actions the agent can take in the Double Dunk environment. As shown in Figure 1, each state representation the network receives as inputs consists of 128 feature nodes, representing the state of the vector from the game’s RAM (128 bytes). This data consists of game statistics and metrics such as player position on the court and ball status. The first and second sequential linear layer outputs 128 and 64 dimensions and is followed by a ReLU activation function, which introduces non-linearity to the model. This allows the model to learn more complex patterns and identify the patterns and interactions with the environment throughout the state of the game. \\
+The DDQN model was designed using PyTorch to tailor input from the state of the game and output actions the agent can take in the Double Dunk environment. As shown in Figure 1, each state representation the network receives as inputs consists of 128 feature nodes, representing the state of the vector from the game’s RAM (128 bytes). This data consists of game statistics and metrics such as player position on the court and ball status. The first and second sequential linear layer outputs 128 and 64 dimensions and is followed by a ReLU activation function,. This allows the model to learn more complex patterns and identify the patterns and interactions with the environment throughout the state of the game. \\
 
 The third and fourth sequential linear layers, with 64 and 32 nodes, respectively, help the model focus on the features relevant to the task. It further defines the learning and strategic decision-making process for the AI. The output dimension is reduced in the following layers with a subsequent ReLU activation function. The final output layer converts the 32-dimensional representation to the number of possible actions. The 18 nodes correspond to the variety of potential actions the agent can choose during the game state. Double Dunk uses the entire action space provided by gym-like environments for 18 possible actions. At each layer, the ReLU activation is crucial to ensure that the model is dynamically learning based on the environment and strategically making decisions, not just passively passing input to the model. \\
 
@@ -83,7 +83,7 @@ The third and fourth sequential linear layers, with 64 and 32 nodes, respectivel
 \captionof{figure}{Neural Net Layout} 
 \vspace{.6cm} 
 
-Throughout the game environment, the network uses a strategic decision-making process to decide the best action to take next based on the current state of the Double Dunk environment. The decision-making is facilitated by feeding the game's current state through the model to obtain Q-values for all possible potential actions and then selecting the action with the highest resulting Q-value. This occurs either directly or after a policy decision, specifically epsilon-greedy, to balance exploration with exploitation. This network setup allows the DDQN to refine focus toward strategic decision-making based on the game dynamics encoded in the RAM data. This will, in turn, make the agent's training process more robust and faster.
+Throughout the game environment, the network uses a strategic decision-making process to decide the best action to take next based on the current state of the Double Dunk environment. The decision-making is facilitated by feeding the game's current state through the model to obtain Q-values for all possible potential actions and then selecting the action with the highest resulting Q-value. This occurs either directly or after an epsilon-greedy policy decision, to balance exploration with exploitation. This network setup allows the DDQN to refine focus toward strategic decision-making based on the game dynamics encoded in the RAM data. This will, in turn, make the agent's training process more robust and faster.
 
 \vspace{.5cm}
 \section{\textbf{OBSERVATIONS}}
@@ -101,7 +101,7 @@ When Mr. Outside had possession of the ball during the state of the game, the AI
 
 Throughout the episode progression in Figure 2, we observe that the loss initially goes up before the first 50 episodes and gradually starts to fall. When we increase our batch size, the time taken for the loss to reach a maximum and start falling elapsed. As our goal for this project was to optimize the finishing time of the game as an alternative to rewards, the reward per episode is highly variable. We attempted to train the AI with a small negative reward at each time step and no negative reward. The purpose was to see if there was a noticeable difference between them for runs with less than or equal to 1,000 episodes. We could not see any noticeable difference. \\
 
-We faced problems with using the RAM state as input for our network: it was difficult to modify rewards to our liking and tailor the environment, as we needed access to what the state actually looked like. Due to hardware limitations and time constraints for this project, we could run it for fewer episodes than we originally planned and wanted. Several articles referenced throughout this project's duration mention training over 100,000 episodes. Our simulation currently only runs up to 1000 episodes, so we have much room for improvement in training our agent!\\
+We faced problems with using the RAM state as input for our network: it was difficult to modify rewards to our liking and tailor the environment, as we needed access to what the state actually looked like. Due to hardware limitations and time constraints for this project, we ran our simulation for fewer episodes than we originally planned and wanted. Several articles referenced throughout this project's duration mention training over 100,000 episodes. Our simulation currently only runs up to 1000 episodes, so we have much room for improvement in training our agent!\\
 
 \section{\textbf{DISCUSSION}}
 \vspace{.5cm}
@@ -112,12 +112,12 @@ In the future, our group would like to further our research by looking into an a
 
     \item  Increasing the training time and decreasing the epsilon decay rate would allow for the AI to be more stable in rare situations. \\
 
-    \item  Using software such as \href{https://github.com/marcotcr/lime/blob/master/README.md}{\textit{Lime}} would allow for visualization of the impact of each cell in the ram on the model. Ignoring these would enable the model to ignore input that does not significantly affect the output, similar to adding dropout to the model. The advantage of this over dropout would be that it is deterministic, applied from the start, and could be added with dropout. \\
+    \item  Using software such as \href{https://github.com/marcotcr/lime/blob/master/README.md}{\textit{Lime}} would allow for visualization of the impact of each cell in the ram on the model. Ignoring the irrelevant would enable the model to ignore input that does not significantly affect the output, similar to adding dropout to the model. The advantage of this over dropout would be that it is deterministic, applied from the start, and could be added with dropout. \\
 \end{enumerate}
 
 \section{\textbf{FUTURE WORK}}
 \vspace{.5cm}
-Going forward, we want to optimize this project by using multiple AIs to control both teams in Double Dunk. This would give better metrics on how good the AI is at the game compared to other AIs since the number of games won when playing against other AIs yields a quantitative method of ranking. This would also allow the AI to play against itself, which would allow the AI to focus on learning about situations that it would realistically encounter often. \\
+Going forward, we want to optimize this project by leveraging our ability to use multiple AIs to control both teams in Double Dunk. This would give better metrics on how good the AI is at the game compared to other AIs since the number of games won when playing against other AIs yields a quantitative method of ranking. This would also allow the AI to play against itself, which would allow the AI to focus on learning about situations that it would realistically encounter often. \\
 
 Additionally, we would like to test our architecture's performance on the other Atari games. The input and output layers are not a hard-coded size, which allows the model architecture to be applied to other games without having to change any code, even if they do not use the full RAM or action space.\\
 
@@ -157,5 +157,9 @@ Additionally, we would like to test our architecture's performance on the other 
 \end{itemize}
 
 \addtolength{\textheight}{-13cm}  
+
+%References:
+\bibliographystyle{IEEEtran}
+\bibliography{bibliography}
 
 \end{document}
