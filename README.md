@@ -67,6 +67,9 @@ After installing, you must execute the following command to accept the AutoROM l
 ```bash
 AutoROM -y
 ```
+
+**NOTE: Gymnasium doesn't work with Python 12.x, please use Python 11.x for the best performance.**
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
@@ -74,17 +77,17 @@ AutoROM -y
 
 To Train the model from scratch using preset hyperparameters (you can modify the hyperparameters inside this file)
 ```sh
-   python train.py
+   python3 train.py
    ```
 
 To test the trained model and generate results: (update the file name inside to test out different models)
 ```sh
-    python test.py
+    python3 test.py
    ```
 
 To to train a multi agent model:
 ```sh
-    python train_multi_agent.py
+    python3 train_multi_agent.py
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
