@@ -4,10 +4,11 @@
 <br />
 <div align="center">
 
-<h3 align="center">AI Hoops!</h3>
+<h1 align="center">AI Hoops!</h1>
   <img src="doubledunk.gif"/>
   <p align="center">
-    Create agents to play Double Dunk.
+    Teach agents to play Double Dunk using DDQNs! (<a href="Final_Report_CS4100.pdf">Paper</a>)
+    
   </p>
 </div>
 
@@ -31,7 +32,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About AI Hoops
 
-AI Hoops is a respository for training and executing models on the Dobble Dunk Atari Enviroment. It supports both single and multi-agent enviroments. It provides an api to easily train the model architecture on various hyperparamaters. It may be useful on other Atari Enviroments too.
+AI Hoops is a respository for training and executing models on the Dobble Dunk Atari Enviroment. It supports both single and multi-agent enviroments. It provides an api to easily train the model architecture on various hyperparamaters. This is fully compatible with other Atari games, and should just need replacing the environment name that is hard coded to be DoubleDunk.
+
+<a href="Final_Report_CS4100.pdf">Here is the Paper documenting our findings</a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -40,7 +43,7 @@ AI Hoops is a respository for training and executing models on the Dobble Dunk A
 
 ### Installation
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 Install the following prerequisites. Be sure to have auto rom install roms for both Gymnasium and PettingZoo if you want to use both.
 <ul>
@@ -56,22 +59,25 @@ or, use the `requirements.txt` we provide by doing:
 ```
 pip3 install -r requirements.txt
 ```
-Note: This installs everything except Torch, since in order to install Torch with CUDA you have to follow the [instructions](https://pytorch.org/get-started/locally/) on the PyTorch website.
+Note: This installs everything except Torch. 
+- In order to install Torch with cpu, do `pip3 install torch`
+- In order to install Torch with CUDA you have to follow the [instructions](https://pytorch.org/get-started/locally/) on the PyTorch website.
 
 After installing, you must execute the following command to accept the AutoROM license if you want to get the DoubleDunk ROM from Autorom (do this in a regular terminal)
 ```bash
 AutoROM -y
 ```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-To Train the model from scratch using preset hyperparameters
+To Train the model from scratch using preset hyperparameters (you can modify the hyperparameters inside this file)
 ```sh
    python train.py
    ```
 
-To test the trained model and generate results:
+To test the trained model and generate results: (update the file name inside to test out different models)
 ```sh
     python test.py
    ```
@@ -104,5 +110,7 @@ Project Link: [https://github.com/anish-sahoo/AI-Hoops](https://github.com/anish
 
 * [A Deeper Look at Experience Replay](https://arxiv.org/pdf/1712.01275)
 * [Large Batch Experience Replay](https://proceedings.mlr.press/v162/lahire22a/lahire22a.pdf)
-
+* [Atari Documentation](https://www.endtoend.ai/envs/gym/atari/double-dunk/)
+* [Atari Double Dunk Environment](https://www.endtoend.ai/envs/gym/atari/double-dunk/)
+* All the journal articles are referenced in our [paper](Final_Report_CS4100.pdf)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

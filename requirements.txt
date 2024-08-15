@@ -1,6 +1,5 @@
 gymnasium[atari]
 ale-py
-torch
 tqdm
 autorom
 numpy

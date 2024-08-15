@@ -1,0 +1,84 @@
+<?xml version="1.0" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="312pt" height="245pt" viewBox="0.00 0.00 311.52 244.71">
+<g id="graph0" class="graph" transform="translate(11.604587514447985,232.8509827548745) scale(0.8758572008568044)" data-name="">
+<polygon fill="white" stroke="none" points="-4,4 -4,-240.71 307.52,-240.71 307.52,4 -4,4"/>
+<!-- (input 128) -->
+<g id="node1" class="node" pointer-events="visible" data-name="i1" data-comment="(input 128)">
+
+<ellipse fill="lightsalmon" stroke="lightsalmon" cx="58.33" cy="-195.42" rx="58.15" ry="41.09"/>
+<text text-anchor="middle" x="58.33" y="-208.02" font-family="Times,serif" font-size="14.00">Input</text>
+<text text-anchor="middle" x="58.33" y="-191.22" font-family="Times,serif" font-size="14.00">Linear</text>
+<text text-anchor="middle" x="58.33" y="-174.42" font-family="Times,serif" font-size="14.00">(128 nodes)</text>
+</g>
+<!-- 128 -->
+
+<!-- (input 128)&#45;&#45;128 -->
+<g id="edge1" class="edge" data-name="i1-&gt;h1" data-comment="(input 128)--128">
+
+<path fill="none" stroke="black" d="M116.81,-193.55C135.33,-192.95 156.04,-192.28 175.3,-191.65"/>
+<polygon fill="black" stroke="black" points="175.36,-195.15 185.24,-191.33 175.13,-188.16 175.36,-195.15"/>
+<text text-anchor="middle" x="151.76" y="-196.62" font-family="Times,serif" font-size="14.00">ReLU</text>
+</g>
+<!-- 64 -->
+<g id="node2" class="node" pointer-events="visible" data-name="h1" data-comment="64">
+
+<ellipse fill="rgb(119, 136, 153)" stroke="rgb(119, 136, 153)" cx="245.19" cy="-189.42" rx="58.15" ry="29.33"/>
+<text text-anchor="middle" x="245.19" y="-193.62" font-family="Times,serif" font-size="14.00">Hidden</text>
+<text text-anchor="middle" x="245.19" y="-176.82" font-family="Times,serif" font-size="14.00">(128 nodes)</text>
+</g>
+<!-- 128&#45;&#45;64 -->
+<g id="edge2" class="edge" data-name="h1-&gt;h2" data-comment="128--64">
+
+<path fill="none" stroke="black" d="M201.03,-170.04C173.98,-157.89 138.96,-142.17 110.51,-129.4"/>
+<polygon fill="black" stroke="black" points="112.29,-126.36 101.74,-125.46 109.42,-132.74 112.29,-126.36"/>
+<text text-anchor="middle" x="183.92" y="-141.44" font-family="Times,serif" font-size="14.00">ReLU</text>
+</g>
+<!-- 32 -->
+<g id="node3" class="node" pointer-events="visible" data-name="h2" data-comment="32">
+
+<ellipse fill="rgb(119, 136, 153)" stroke="rgb(119, 136, 153)" cx="58.33" cy="-106.42" rx="53.25" ry="29.33"/>
+<text text-anchor="middle" x="58.33" y="-110.62" font-family="Times,serif" font-size="14.00">Hidden</text>
+<text text-anchor="middle" x="58.33" y="-93.82" font-family="Times,serif" font-size="14.00">(64 nodes)</text>
+</g>
+<!-- 64&#45;&#45;32 -->
+<g id="node4" class="node" pointer-events="visible" data-name="h3" data-comment="64--32">
+
+<ellipse fill="rgb(119, 136, 153)" stroke="rgb(119, 136, 153)" cx="245.19" cy="-106.42" rx="53.25" ry="29.33"/>
+<text text-anchor="middle" x="245.19" y="-110.62" font-family="Times,serif" font-size="14.00">Hidden</text>
+<text text-anchor="middle" x="245.19" y="-93.82" font-family="Times,serif" font-size="14.00">(64 nodes)</text>
+</g><g id="edge3" class="edge" data-name="h2-&gt;h3" data-comment="64--32">
+
+<path fill="none" stroke="black" d="M111.81,-106.42C133.08,-106.42 157.85,-106.42 180.16,-106.42"/>
+<polygon fill="black" stroke="black" points="180.07,-109.92 190.07,-106.42 180.07,-102.92 180.07,-109.92"/>
+<text text-anchor="middle" x="151.76" y="-110.62" font-family="Times,serif" font-size="14.00">ReLU</text>
+</g>
+<!-- 18 (output) -->
+
+<!-- 32&#45;&#45;18 (output) -->
+<!-- 32&#45;&#45;18 (output) -->
+<g id="node5" class="node" pointer-events="visible" data-name="h4" data-comment="32--18 (output)">
+
+<ellipse fill="rgb(119, 136, 153)" stroke="rgb(119, 136, 153)" cx="58.33" cy="-29.42" rx="53.25" ry="29.33"/>
+<text text-anchor="middle" x="58.33" y="-33.62" font-family="Times,serif" font-size="14.00">Hidden</text>
+<text text-anchor="middle" x="58.33" y="-16.82" font-family="Times,serif" font-size="14.00">(32 nodes)</text>
+</g><g id="edge4" class="edge" data-name="h3-&gt;h4" data-comment="32--18 (output)">
+
+<path fill="none" stroke="black" d="M202.09,-88.88C175.33,-77.73 140.46,-63.21 111.89,-51.31"/>
+<polygon fill="black" stroke="black" points="113.25,-48.08 102.67,-47.47 110.56,-54.55 113.25,-48.08"/>
+<text text-anchor="middle" x="184.98" y="-60.28" font-family="Times,serif" font-size="14.00">ReLU</text>
+</g>
+
+<!-- h4&#45;&#45;h5 -->
+<g id="node6" class="node" pointer-events="visible" data-name="h5" data-comment="h4--h5">
+
+<ellipse fill="lightsalmon" stroke="lightsalmon" cx="245.19" cy="-29.42" rx="53.25" ry="29.33"/>
+<text text-anchor="middle" x="245.19" y="-33.62" font-family="Times,serif" font-size="14.00">Output</text>
+<text text-anchor="middle" x="245.19" y="-16.82" font-family="Times,serif" font-size="14.00">(18 nodes)</text>
+</g><g id="edge5" class="edge" data-name="h4-&gt;h5" data-comment="h4--h5">
+
+<path fill="none" stroke="black" d="M111.81,-29.42C133.08,-29.42 157.85,-29.42 180.16,-29.42"/>
+<polygon fill="black" stroke="black" points="180.07,-32.92 190.07,-29.42 180.07,-25.92 180.07,-32.92"/>
+<text text-anchor="middle" x="151.76" y="-33.62" font-family="Times,serif" font-size="14.00">ReLU</text>
+</g>
+</g>
+</svg>
