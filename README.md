@@ -16,11 +16,11 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-AI-Hoops">About AI Hoops</a>
+      <a href="#about-ai-hoops">About AI Hoops</a>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
-      <li><a href="#Installation">Installation</a></li>
+      <li><a href="#installation">Installation</a></li>
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -52,22 +52,33 @@ Install the following prerequisites. Be sure to have auto rom install roms for b
   <li><a href="#installation">Installation</a></li>
 </ul>
 
+or, use the `requirements.txt` we provide by doing:
+```
+pip3 install -r requirements.txt
+```
+Note: This installs everything except Torch, since in order to install Torch with CUDA you have to follow the [instructions](https://pytorch.org/get-started/locally/) on the PyTorch website.
+
+After installing, you must execute the following command to accept the AutoROM license if you want to get the DoubleDunk ROM from Autorom (do this in a regular terminal)
+```bash
+AutoROM -y
+```
+
 <!-- USAGE EXAMPLES -->
 ## Usage
 
 To Train the model from scratch using preset hyperparameters
 ```sh
-   python dqn_training.py
+   python train.py
    ```
 
 To test the trained model and generate results:
 ```sh
-    python model_test.py
+    python test.py
    ```
 
 To to train a multi agent model:
 ```sh
-    python multi_agent.py
+    python train_multi_agent.py
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -76,13 +87,13 @@ To to train a multi agent model:
 <!-- CONTACT -->
 ## Contact
 
-Anish Sahoo - email@northeastern.edu
+Anish Sahoo - sahoo.an@northeastern.edu
 
-Ethan Carpenter - email@northeastern.edu
+Ethan Carpenter - carpenter.et@northeastern.edu
 
-Sana Ali - email@northeastern.edu
+Sana Ali - ali.sa@northeastern.edu
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/anish-sahoo/AI-Hoops](https://github.com/anish-sahoo/AI-Hoops)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
