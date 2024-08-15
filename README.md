@@ -90,6 +90,19 @@ To to train a multi agent model:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+
+## Links
+
+Project Link: [https://github.com/anish-sahoo/AI-Hoops](https://github.com/anish-sahoo/AI-Hoops)
+
+Paper PDF - [Final_Report_CS4100.pdf](Final_Report_CS4100.pdf)
+
+
+Paper Repository - [https://github.com/anish-sahoo/AI-Hoops-Paper](https://github.com/anish-sahoo/AI-Hoops-Paper)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
 <!-- CONTACT -->
 ## Contact
 
@@ -99,11 +112,7 @@ Ethan Carpenter - carpenter.et@northeastern.edu
 
 Sana Ali - ali.sa@northeastern.edu
 
-Project Link: [https://github.com/anish-sahoo/AI-Hoops](https://github.com/anish-sahoo/AI-Hoops)
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
@@ -114,3 +123,5 @@ Project Link: [https://github.com/anish-sahoo/AI-Hoops](https://github.com/anish
 * [Atari Double Dunk Environment](https://www.endtoend.ai/envs/gym/atari/double-dunk/)
 * All the journal articles are referenced in our [paper](Final_Report_CS4100.pdf)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+*Thank you for reading!*
