@@ -8,7 +8,7 @@ from torch.nn.functional import relu
 from tqdm import tqdm 
 from torch.utils.data import DataLoader, Dataset
 
-torch.device("cuda")
+torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class ReplayDataset(Dataset):
     def __init__(self, states, actions, next_states, rewards, dones):

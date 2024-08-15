@@ -1,6 +1,4 @@
 # imports
-import numpy as np
-import matplotlib.pyplot as plt
 import torch
 
 # imports for environment
@@ -9,10 +7,10 @@ from ale_py import ALEInterface
 from ale_py.roms import DoubleDunk
 
 # importing the Deep Q-Network class
-from dqn_training import DeepQNetwork
+from dqn.dqn_training import DeepQNetwork
 
 # main script
-if __name__ == "__main__":
+def test_dqn(weights_file):
     ale = ALEInterface()
     ale.loadROM(DoubleDunk)
     
@@ -23,7 +21,7 @@ if __name__ == "__main__":
     policy_net = DeepQNetwork(128, 18)
 
     # loading the pretrained weights
-    policy_net.load_state_dict(torch.load('training_100/policy_net_100_4096_first.pth', weights_only=True))
+    policy_net.load_state_dict(torch.load(weights_file, weights_only=True))
     policy_net.eval()
 
     next_state, _ = env.reset()
@@ -39,14 +37,13 @@ if __name__ == "__main__":
     while not done:
         policy_net.eval()
         with torch.no_grad():
-            
             # compute action probabilities from the current state of the game
-            # action_probabilities = policy_net(torch.tensor(next_state, dtype=torch.float32).unsqueeze(0))
+            action_probabilities = policy_net(torch.tensor(next_state, dtype=torch.float32).unsqueeze(0))
             action_probabilities = torch.softmax(action_probabilities, dim=1)
-            print(action_probabilities)
             action = torch.multinomial(action_probabilities, 1).item()
         next_state, reward, done, truncated, info = env.step(action)
-        next_state, reward, done, truncated, info = env.step(action_probabilities.argmax())
+        # next_state, reward, done, truncated, info = env.step(action_probabilities.argmax().item())
         env.render()
     input()
     env.close()
+

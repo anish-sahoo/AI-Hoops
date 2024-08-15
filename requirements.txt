@@ -1,0 +1,9 @@
+gymnasium[atari]
+ale-py
+torch
+tqdm
+autorom
+numpy
+matplotlib
+polars
+pettingzoo

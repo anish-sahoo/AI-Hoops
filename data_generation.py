@@ -1,6 +1,6 @@
 # imports - works with python 3.11 & 3.12
 import numpy as np
-import pandas as pd
+import polars as pd
 from tqdm import tqdm
 
 # utilities

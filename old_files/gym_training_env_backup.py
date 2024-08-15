@@ -10,8 +10,10 @@ from tqdm import tqdm
 from torch.utils.data import DataLoader, Dataset, random_split
 import random
 
+# replace "cuda" with "cpu" if you don't have a GPU
+
 # %%
-torch.device("cuda")
+torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # %%
 class ReplayBuffer:

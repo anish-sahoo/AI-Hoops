@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader, Dataset, random_split
 import random
 
 # %%
-torch.device("cuda")
+torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # %%
 class ReplayBuffer:

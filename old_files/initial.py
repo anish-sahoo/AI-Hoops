@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-import pandas as pd
+import polars as pd
 import random
 import time
 

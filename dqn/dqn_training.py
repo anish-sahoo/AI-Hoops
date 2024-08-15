@@ -6,8 +6,8 @@ import torch.optim as optim
 from tqdm import tqdm 
 
 # local imports
-from dqn_model import DeepQNetwork, plot_training_statistics, epsilon_greedy_action_selection
-from replay_buffer import ReplayBuffer
+from dqn.dqn_model import DeepQNetwork, plot_training_statistics, epsilon_greedy_action_selection
+from dqn.replay_buffer import ReplayBuffer
 
 # imports for environment
 import gymnasium as gym
@@ -17,7 +17,7 @@ from ale_py.roms import DoubleDunk
 device = "cuda" if torch.cuda.is_available() else "cpu"
 torch.device(device)
 
-def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, epsilon_decay, target_update_freq, negative_reward=-0.01, plot=True, save=True, device=device):
+def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, epsilon_decay, target_update_freq, save_interval=100, replay_buffer_size=1000, negative_reward=-0.01, learning_rate=0.001, save_plots=True, device=device):
     """
     Training function for DQN
     Args:
@@ -29,13 +29,17 @@ def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, 
         epsilon_end: final epsilon value for epsilon-greedy action selection
         epsilon_decay: decay rate for epsilon
         target_update_freq: frequency of updating target network
+        save_interval: interval for saving the model, uses 100 by default (set to 0 to disable saving)
+        replay_buffer_size: size of the replay buffer, uses 1000 by default
         negative_reward: negative reward for each step, uses -0.01 by default
-        plot: whether to plot training statistics
-        save: whether to save the model
+        learning_rate: learning rate for the optimizer, uses 0.001 by default
+        save_plots: whether to save plots of training statistics, uses True by default
         device: device to run the model on (detects cuda if available by default)
     Returns:
         (policy_net, epoch_losses, epoch_rewards): trained policy network, list of losses for each episode,\n list of total rewards for each episode
     """
+    torch.device(device)
+    
     input_dim = env.observation_space.shape[0]
     action_space = env.action_space.n
     
@@ -43,9 +47,9 @@ def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, 
     target_net = DeepQNetwork(input_dim, action_space).to(device)
     
     target_net.load_state_dict(policy_net.state_dict())
-    optimizer = optim.Adam(policy_net.parameters())
+    optimizer = optim.Adam(policy_net.parameters(), lr=learning_rate)
     
-    replay_buffer = ReplayBuffer(capacity=500)
+    replay_buffer = ReplayBuffer(replay_buffer_size)
     
     epoch_losses = []
     epoch_rewards = []
@@ -103,41 +107,15 @@ def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, 
         
         if episode % target_update_freq == 0:
             target_net.load_state_dict(policy_net.state_dict())
-        if episode % 100 == 0 and episode > 0 and save:
+        if save_interval != 0 and episode % save_interval == 0 and episode > 0:
             torch.save(policy_net.state_dict(), f'policy_net_{episode}_{batch_size}_{negative_reward}.pth')
-            if plot:
+            if save_plots:
                 plot_training_statistics(epoch_losses, epoch_rewards, f'policy_net_{episode}_{batch_size}_{negative_reward}')
-    if plot:
+    
+    if save_plots:
         plot_training_statistics(epoch_losses, epoch_rewards, f'policy_net_{num_episodes}_{batch_size}_{negative_reward}')
-    if save:
-        torch.save(policy_net.state_dict(), f'policy_net_{num_episodes}_{batch_size}_{negative_reward}.pth')
-        print(f'Model saved to policy_net_{num_episodes}_{batch_size}_{negative_reward}.pth')
+    
+    torch.save(policy_net.state_dict(), f'policy_net_{num_episodes}_{batch_size}_{negative_reward}.pth')
+    print(f'Model saved to policy_net_{num_episodes}_{batch_size}_{negative_reward}.pth')
+    
     return policy_net, epoch_losses, epoch_rewards
-
-# Example usage
-if __name__ == '__main__':
-    ale = ALEInterface()
-    ale.loadROM(DoubleDunk)
-
-    env = gym.make('ALE/DoubleDunk-ram-v5', obs_type="ram")
-
-    num_episodes = 2000
-    batch_size = 32
-    gamma = 0.995
-    epsilon_start = 1.0
-    epsilon_end = 0.01
-    epsilon_decay = 0.995
-    target_update_freq = 10
-
-    policy_net, epoch_losses, epoch_rewards = train_dqn(
-        env, 
-        num_episodes, 
-        batch_size, 
-        gamma, 
-        epsilon_start, 
-        epsilon_end, 
-        epsilon_decay, 
-        target_update_freq, 
-        device="cuda",
-        negative_reward=-0.1
-    )

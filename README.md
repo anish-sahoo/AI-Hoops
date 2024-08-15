@@ -55,9 +55,9 @@ Install the following prerequisites. Be sure to have auto rom install roms for b
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-To Train the model from scratch:
+To Train the model from scratch using preset hyperparameters
 ```sh
-   python doubledunk_dqn_final.py
+   python dqn_training.py
    ```
 
 To test the trained model and generate results:

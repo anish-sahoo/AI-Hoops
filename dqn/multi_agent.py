@@ -8,8 +8,8 @@ from tqdm import tqdm
 
 # imports for environment
 from pettingzoo.atari import double_dunk_v3
-from dqn_model import DeepQNetwork, plot_training_statistics, epsilon_greedy_action_selection
-from replay_buffer import ReplayBuffer
+from dqn.dqn_model import DeepQNetwork, plot_training_statistics, epsilon_greedy_action_selection
+from dqn.replay_buffer import ReplayBuffer
 
 #standard imports
 from dataclasses import dataclass
