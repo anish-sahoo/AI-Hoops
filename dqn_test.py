@@ -41,7 +41,11 @@ if __name__ == "__main__":
         with torch.no_grad():
             
             # compute action probabilities from the current state of the game
-            action_probabilities = policy_net(torch.tensor(next_state, dtype=torch.float32).unsqueeze(0))
+            # action_probabilities = policy_net(torch.tensor(next_state, dtype=torch.float32).unsqueeze(0))
+            action_probabilities = torch.softmax(action_probabilities, dim=1)
+            print(action_probabilities)
+            action = torch.multinomial(action_probabilities, 1).item()
+        next_state, reward, done, truncated, info = env.step(action)
         next_state, reward, done, truncated, info = env.step(action_probabilities.argmax())
         env.render()
     input()
