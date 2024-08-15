@@ -5,7 +5,7 @@
 <div align="center">
 
 <h3 align="center">AI Hoops!</h3>
-
+  <img src="doubledunk.gif"/>
   <p align="center">
     Create agents to play Double Dunk.
   </p>

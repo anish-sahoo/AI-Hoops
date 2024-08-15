@@ -48,9 +48,9 @@ def sample_usage(device):
     )
 
 #calls the code
-def main():
-     device = get_device()
-     sample_usage(device)
+def train_multi_agent():
+    device = get_device()
+    sample_usage(device)
 
 #A copy of the info used for each agent
 @dataclass
@@ -174,4 +174,4 @@ def train_dqn(env, num_episodes, batch_size, gamma, epsilon_start, epsilon_end, 
 
 
 if __name__ == "__main__":
-   main()
+   train_multi_agent()
